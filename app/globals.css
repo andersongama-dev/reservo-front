@@ -11,10 +11,12 @@ body {
 .login {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
+  height: 100dvh;
+  overflow-y: hidden;
 }
 
 h2 {
-  color: #0000D5;
+  color: #0000d5;
   font-weight: bold;
   font-size: 35px;
   letter-spacing: 1%;
@@ -37,7 +39,7 @@ a {
 }
 
 a:hover {
-  color: #0000D5;
+  color: #0000d5;
 }
 
 input {
@@ -45,7 +47,7 @@ input {
   padding-inline: 24px;
   border-radius: 8px;
   border: none;
-  background-color: #E8E8E8;
+  background-color: #e8e8e8;
   color: #757575;
   font-size: 16px;
   letter-spacing: 2%;
@@ -57,18 +59,18 @@ input::placeholder {
 }
 
 input:focus {
-  border: solid #0000D5;
-  color: #0000D5;
+  border: solid #0000d5;
+  color: #0000d5;
   outline: none;
 }
 
 input:focus::placeholder {
-  color: #0000D5;
+  color: #0000d5;
 }
 
 .primary-button {
   color: white;
-  background-color: #0000D5;
+  background-color: #0000d5;
   padding: 16px 24px;
   border: none;
   border-radius: 8px;
@@ -84,7 +86,11 @@ input:focus::placeholder {
   justify-content: center;
 }
 
-.form-login h2, p, input, a, button {
+.form-login h2,
+p,
+input,
+a,
+button {
   width: 30dvw;
 }
 
@@ -116,4 +122,5 @@ input:focus::placeholder {
 .banner-initial img {
   width: 50dvw;
   height: 100dvh;
+  object-fit: cover;
 }
