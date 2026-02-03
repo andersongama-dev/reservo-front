@@ -1,26 +1,12 @@
 "use client";
-
-import { ButtonHTMLAttributes, ReactNode } from "react";
-
-type ButtonVariant =
-  | "primary"
-  | "secondary"
-  | "success"
-  | "danger"
-  | "alert"
-  | "edit";
-
-interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  children: ReactNode;
-  variant?: ButtonVariant;
-}
+import React from "react";
 
 export default function Button({
   children,
   variant = "primary",
   disabled = false,
   ...props
-}: ButtonProps) {
+}) {
   const baseStyles = `
     relative overflow-hidden
     w-full px-6 py-4 rounded-lg
@@ -30,7 +16,7 @@ export default function Button({
     font-semibold
   `;
 
-  const variants: Record<ButtonVariant, string> = {
+  const variants = {
     primary: "bg-[#0000d5] text-white hover:bg-[#0000a5]",
     secondary: "bg-gray-200 text-gray-800 hover:bg-gray-300",
     success: "bg-green-600 text-white hover:bg-green-700",
@@ -42,7 +28,7 @@ export default function Button({
   const disabledStyles =
     "bg-gray-300 text-gray-500 cursor-not-allowed";
 
-  function createRipple(e: React.MouseEvent<HTMLButtonElement>) {
+  function createRipple(e) {
     const button = e.currentTarget;
     const circle = document.createElement("span");
 
