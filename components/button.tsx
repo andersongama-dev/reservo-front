@@ -27,6 +27,7 @@ export default function Button({
     font-medium transition-all duration-200
     active:scale-95 mt-[32px]
     cursor-pointer
+    font-semibold
   `;
 
   const variants: Record<ButtonVariant, string> = {

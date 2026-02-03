@@ -34,7 +34,7 @@ export default function Login() {
         </form>
 
         <a
-          href="#"
+          href="/register"
           className="mt-8 text-center text-[#757575] text-base tracking-[2%] hover:text-[#0000d5]"
         >
           Não tem uma conta? Crie uma!
