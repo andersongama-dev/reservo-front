@@ -1,7 +1,62 @@
+"use client";
+import { useState } from "react";
 import Input from "../../components/input";
 import Button from "../../components/button";
 
 export default function Login() {
+  /*
+  var emailElement = getElementsByClassName(".email")
+  var passwordElement = null;*/
+
+  const [user, setUser] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
+
+  const [status, setStatus] = useState({
+    type: "",
+    message: "",
+  });
+
+  const loginUser = async (e) => {
+    e.preventDefault();
+
+    if (!validate()) return;
+
+    const loginUserWeb = true;
+
+    if (loginUserWeb) {
+      setStatus({
+        type: "success",
+        message: "Bem vindo novamente!",
+      });
+
+      setUser({
+        name: "",
+        email: "",
+        password: "",
+      });
+    } else {
+      setStatus({
+        type: "error",
+        message: "Erro ao logar",
+      });
+    }
+  };
+
+  function validate() {
+    if (!user.email || !user.password) {
+      setStatus({
+        type: "error",
+        message: "Preencha email e senha",
+      });
+      return false;
+    }
+
+    return true;
+  }
+
   return (
     <div className="grid grid-cols-2 h-dvh overflow-y-hidden">
       <section className="flex flex-col items-center justify-center w-[50dvw] h-dvh">
@@ -14,18 +69,35 @@ export default function Login() {
           </p>
         </article>
 
-        <form className="w-[30dvw]">
+        <form className="w-[30dvw]" onSubmit={loginUser}>
           <article className="flex flex-col gap-6 mt-16">
-            <Input inputType="email" inputPlaceholder="E-mail" />
+            <Input
+              inputType="email"
+              inputPlaceholder="E-mail"
+              value={user.email}
+              onChange={(e) => setUser({ ...user, email: e.target.value })}
+            />
 
-            <Input inputType="password" inputPlaceholder="Senha" />
+            <Input
+              inputType="password"
+              inputPlaceholder="Senha"
+              value={user.password}
+              onChange={(e) => setUser({ ...user, password: e.target.value })}
+            />
 
-            <a
-              href="#"
-              className="text-right text-[#757575] text-base tracking-[2%] hover:text-[#0000d5]"
+            <div
+              className={`flex items-center w-[30dvw] text-base
+              ${status.type === "error" ? "text-red-600" : "text-green-600"}`}
             >
-              Esqueceu a senha?
-            </a>
+              {status.message && <span>{status.message}</span>}
+
+              <a
+                href="#"
+                className="ml-auto text-[#757575] tracking-[2%] hover:text-[#0000d5]"
+              >
+                Esqueceu a senha?
+              </a>
+            </div>
           </article>
 
           <Button variant="primary" type="submit">

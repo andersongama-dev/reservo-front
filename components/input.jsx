@@ -1,10 +1,14 @@
 "use client";
 import { useState } from "react";
 
-export default function Input({ inputType, inputPlaceholder }) {
-  const [showPassword, setShowPassword] = useState(false);
-
+export default function Input({
+  inputType,
+  inputPlaceholder,
+  value,
+  onChange,
+}) {
   const isPassword = inputType === "password";
+  const [showPassword, setShowPassword] = useState(false);
   const type = isPassword && showPassword ? "text" : inputType;
 
   return (
@@ -12,40 +16,33 @@ export default function Input({ inputType, inputPlaceholder }) {
       <input
         type={type}
         placeholder={inputPlaceholder}
+        value={value}
+        onChange={onChange}
         className="
-          w-full
-          px-6 py-4
-          rounded-lg
-          border-none
-          bg-[#e8e8e8]
-          text-[#757575]
-          text-base
-          tracking-[2%]
-          leading-relaxed
-          focus:outline-none
-          focus:ring-2
-          focus:ring-[#0000d5]
-          focus:text-[#0000d5]
-          placeholder:text-[#757575]
-          focus:placeholder:text-[#0000d5]
+          w-full px-6 py-4 rounded-lg border-none
+          bg-[#e8e8e8] text-[#757575]
+          focus:ring-2 focus:ring-[#0000d5]
         "
       />
 
       {isPassword && (
         <button
           type="button"
-          onClick={() => setShowPassword(prev => !prev)}
+          onClick={() => setShowPassword((prev) => !prev)}
           className="
-            absolute
-            right-4
-            top-1/2
-            -translate-y-1/2
-            text-sm
-            text-[#757575]
-            hover:text-[#0000d5]
-          "
+      absolute
+      right-4
+      top-1/2
+      -translate-y-1/2
+      text-[#757575]
+      hover:text-[#0000d5]
+    "
         >
-          {showPassword ? "Ocultar" : "Mostrar"}
+          <i
+            className={`${
+              showPassword ? "bi bi-eye-slash" : "bi bi-eye"
+            } text-[24px]`}
+          />
         </button>
       )}
     </div>
