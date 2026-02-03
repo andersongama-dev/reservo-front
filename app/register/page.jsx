@@ -26,7 +26,7 @@ export default function Register() {
     if (createUserWeb) {
       setStatus({
         type: "success",
-        message: "Usario criado com sucesso!",
+        message: "Usuário criado com sucesso!",
       });
 
       setUser({
@@ -38,7 +38,7 @@ export default function Register() {
     } else {
       setStatus({
         type: "error",
-        message: "Erro ao logar",
+        message: "Erro ao criar a conta",
       });
     }
   };
@@ -47,7 +47,7 @@ export default function Register() {
     if (!user.name ||!user.email || !user.password || !user.confirmPassword) {
       setStatus({
         type: "error",
-        message: "Preencha todos os campos",
+        message: "Preencha todos os campos obrigatórios",
       });
       return false;
     }
@@ -55,7 +55,7 @@ export default function Register() {
     if(user.confirmPassword != user.password) {
       setStatus({
         type: "error",
-        message: "As senha não se coincidem",
+        message: "As senhas não coincidem",
       });
       return false;
     }
@@ -71,7 +71,7 @@ export default function Register() {
             Criar conta
           </h2>
           <p className="text-[#757575] text-[25px] tracking-[2%] leading-relaxed">
-            Prepare sua barbearia para trabalhar no automático.
+            Prepare sua barbearia para funcionar de forma automática.
           </p>
         </article>
 
@@ -122,7 +122,7 @@ export default function Register() {
           href="/login"
           className="mt-8 text-center text-[#757575] text-base tracking-[2%] hover:text-[#0000d5]"
         >
-          Já possui uma conta? Acesse agora!
+          Já possui uma conta? Entrar
         </a>
       </section>
 
