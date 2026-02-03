@@ -4,9 +4,6 @@ import Input from "../../components/input";
 import Button from "../../components/button";
 
 export default function Login() {
-  /*
-  var emailElement = getElementsByClassName(".email")
-  var passwordElement = null;*/
 
   const [user, setUser] = useState({
     name: "",
