@@ -1,12 +1,7 @@
 "use client";
 import { useState } from "react";
 
-type InputProps = {
-  inputType: React.HTMLInputTypeAttribute;
-  inputPlaceholder: string;
-};
-
-export default function Input({ inputType, inputPlaceholder }: InputProps) {
+export default function Input({ inputType, inputPlaceholder }) {
   const [showPassword, setShowPassword] = useState(false);
 
   const isPassword = inputType === "password";
@@ -39,7 +34,7 @@ export default function Input({ inputType, inputPlaceholder }: InputProps) {
       {isPassword && (
         <button
           type="button"
-          onClick={() => setShowPassword((prev) => !prev)}
+          onClick={() => setShowPassword(prev => !prev)}
           className="
             absolute
             right-4
