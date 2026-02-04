@@ -14,3 +14,72 @@
     opacity: 0;
   }
 }
+
+.particle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: #ffffff;
+  border-radius: 999px;
+  animation: explode 600ms ease-out forwards;
+  opacity: 0;
+}
+
+@keyframes explode {
+  0% {
+    transform: translate(0, 0) scale(0.5);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--x), var(--y)) scale(1);
+    opacity: 0;
+  }
+}
+
+.particle-0 {
+  --x: -40px;
+  --y: -20px;
+}
+.particle-1 {
+  --x: 40px;
+  --y: -20px;
+}
+.particle-2 {
+  --x: -30px;
+  --y: 30px;
+}
+.particle-3 {
+  --x: 30px;
+  --y: 30px;
+}
+.particle-4 {
+  --x: 0px;
+  --y: -45px;
+}
+.particle-5 {
+  --x: 0px;
+  --y: 45px;
+}
+.particle-6 {
+  --x: -45px;
+  --y: 0px;
+}
+.particle-7 {
+  --x: 45px;
+  --y: 0px;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 250ms ease-out;
+}

@@ -1,9 +1,12 @@
 "use client";
 import { useState } from "react";
-import Input from "../../components/input";
-import Button from "../../components/button";
+import { useRouter } from "next/navigation";
+import Input from "@/components/input";
+import Button from "@/components/button";
+import { navigate } from "next/dist/client/components/segment-cache/navigation";
 
 export default function Login() {
+  const router = useRouter();
 
   const [user, setUser] = useState({
     name: "",
@@ -34,6 +37,8 @@ export default function Login() {
         email: "",
         password: "",
       });
+
+      router.push("/agenda");
     } else {
       setStatus({
         type: "error",
