@@ -1,9 +1,12 @@
 "use client";
+import { useRouter } from "next/navigation";
 import { use, useState } from "react";
-import Input from "../../components/input";
-import Button from "../../components/button";
+import Input from "@/components/input";
+import Button from "@/components/button";
 
 export default function Register() {
+  const router = useRouter();
+
   const [user, setUser] = useState({
     name: "",
     email: "",
@@ -33,8 +36,10 @@ export default function Register() {
         name: "",
         email: "",
         password: "",
-        confirmPassword: ""
+        confirmPassword: "",
       });
+
+      router.push("/onboarding");
     } else {
       setStatus({
         type: "error",
@@ -44,7 +49,7 @@ export default function Register() {
   };
 
   function validate() {
-    if (!user.name ||!user.email || !user.password || !user.confirmPassword) {
+    if (!user.name || !user.email || !user.password || !user.confirmPassword) {
       setStatus({
         type: "error",
         message: "Preencha todos os campos obrigatórios",
@@ -52,7 +57,7 @@ export default function Register() {
       return false;
     }
 
-    if(user.confirmPassword != user.password) {
+    if (user.confirmPassword != user.password) {
       setStatus({
         type: "error",
         message: "As senhas não coincidem",
@@ -92,17 +97,19 @@ export default function Register() {
             />
 
             <Input
-              inputType="password" 
-              inputPlaceholder="Senha" 
+              inputType="password"
+              inputPlaceholder="Senha"
               value={user.password}
-              onChange={(e) => setUser({ ...user, password: e.target.value})}
+              onChange={(e) => setUser({ ...user, password: e.target.value })}
             />
 
             <Input
-              inputType="password" 
+              inputType="password"
               inputPlaceholder="Confirmar senha"
               value={user.confirmPassword}
-              onChange={(e) => setUser({ ...user, confirmPassword: e.target.value})}
+              onChange={(e) =>
+                setUser({ ...user, confirmPassword: e.target.value })
+              }
             />
 
             <div
