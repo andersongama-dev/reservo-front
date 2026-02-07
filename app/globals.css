@@ -83,3 +83,44 @@
 .animate-fade-in {
   animation: fade-in 250ms ease-out;
 }
+
+.btn-menu {
+  position: absolute;
+  top: 36px;
+  left: 84px;
+  padding: 4px;
+  background-color: #0000d5;
+  color: white;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  z-index: 99999;
+  cursor: pointer;
+}
+
+.menu-border {
+  border-right: 1 solid #d6d6d6;
+  height: 100dvh;
+  z-index: 99998;
+}
+
+.btn-open {
+  left: 208px;
+}
+
+.menu-border .logo {
+  border-radius: 4px;
+}
+
+p {
+  line-height: 1.5;
+  letter-spacing: 2%;
+}
+
+.close {
+  display: none;
+}
