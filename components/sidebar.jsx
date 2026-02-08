@@ -10,11 +10,26 @@ export default function Sidebar({ activeScreen }) {
   };
 
   const menuItems = [
-    { id: "agenda", icon: "bi-calendar-check", label: "Agenda" },
-    { id: "painel", icon: "bi-bar-chart", label: "Painel do dia" },
-    { id: "servicos", icon: "bi-tag", label: "Serviços" },
-    { id: "funcionarios", icon: "bi-person-gear", label: "Funcionarios" },
-    { id: "barbearia", icon: "bi-person", label: "Barbearia" },
+    {
+      id: "agenda",
+      icon: "bi-calendar-check",
+      label: "Agenda",
+      link: "agenda",
+    },
+    {
+      id: "painel",
+      icon: "bi-bar-chart",
+      label: "Painel do dia",
+      link: "paneltoday",
+    },
+    { id: "servicos", icon: "bi-tag", label: "Serviços", link: "services" },
+    {
+      id: "funcionarios",
+      icon: "bi-person-gear",
+      label: "Funcionarios",
+      link: "team",
+    },
+    { id: "barbearia", icon: "bi-person", label: "Barbearia", link: "barber" },
   ];
 
   return (
@@ -41,7 +56,7 @@ export default function Sidebar({ activeScreen }) {
               {menuItems.map((item) => (
                 <li key={item.id}>
                   <a
-                    href="#"
+                    href={item.link}
                     className={`flex gap-4 items-center ${
                       activeScreen === item.id ? "text-[#0000d5] font-bold" : ""
                     }`}
@@ -63,7 +78,7 @@ export default function Sidebar({ activeScreen }) {
           <ul className="grid gap-8 text-2xl text-[#757575]">
             <li>
               <a
-                href="#"
+                href="settings"
                 className={`flex gap-4 items-center ${
                   activeScreen === "configuracoes"
                     ? "text-[#0000d5] font-bold"
