@@ -6,6 +6,7 @@ export default function Input({
   inputPlaceholder,
   value,
   onChange,
+  disabled = false,
 }) {
   const isPassword = inputType === "password";
   const [showPassword, setShowPassword] = useState(false);
@@ -18,25 +19,23 @@ export default function Input({
         placeholder={inputPlaceholder}
         value={value}
         onChange={onChange}
-        className="
+        disabled={disabled}
+        className={`
           w-full px-6 py-4 rounded-lg border-none
           bg-[#e8e8e8] text-[#757575]
           focus:ring-2 focus:ring-[#0000d5]
-        "
+          ${disabled ? "opacity-50 cursor-not-allowed" : ""}
+        `}
       />
 
-      {isPassword && (
+      {isPassword && !disabled && (
         <button
           type="button"
           onClick={() => setShowPassword((prev) => !prev)}
           className="
-      absolute
-      right-4
-      top-1/2
-      -translate-y-1/2
-      text-[#757575]
-      hover:text-[#0000d5]
-    "
+            absolute right-4 top-1/2 -translate-y-1/2
+            text-[#757575] hover:text-[#0000d5]
+          "
         >
           <i
             className={`${

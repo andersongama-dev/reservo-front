@@ -5,15 +5,14 @@ export default function Button({
   children,
   variant = "primary",
   disabled = false,
+  onClick,
   ...props
 }) {
   const baseStyles = `
     relative overflow-hidden
     w-full px-6 py-4 rounded-lg
-    font-medium transition-all duration-200
+    font-semibold transition-all duration-200
     active:scale-95 mt-[32px]
-    cursor-pointer
-    font-semibold
   `;
 
   const variants = {
@@ -25,8 +24,7 @@ export default function Button({
     edit: "bg-indigo-600 text-white hover:bg-indigo-700",
   };
 
-  const disabledStyles =
-    "bg-gray-300 text-gray-500 cursor-not-allowed";
+  const disabledStyles = "bg-gray-300 text-gray-500 cursor-not-allowed";
 
   function createRipple(e) {
     const button = e.currentTarget;
@@ -47,10 +45,21 @@ export default function Button({
     button.appendChild(circle);
   }
 
+  function handleClick(e) {
+    if (disabled) return;
+
+    createRipple(e);
+
+    if (onClick) {
+      onClick(e);
+    }
+  }
+
   return (
     <button
+      type="button"
       disabled={disabled}
-      onClick={createRipple}
+      onClick={handleClick}
       className={`${baseStyles} ${
         disabled ? disabledStyles : variants[variant]
       }`}
