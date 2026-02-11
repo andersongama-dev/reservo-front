@@ -24,9 +24,24 @@ export default function Register() {
 
     if (!validate()) return;
 
-    const createUserWeb = true;
+    try {
+      const response = await fetch("http://localhost:3333/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          user_name: user.name,
+          user_email: user.email,
+          user_password: user.password,
+        }),
+      });
 
-    if (createUserWeb) {
+      if (!response.ok) {
+        throw new Error("Erro no registro");
+      }
+
       setStatus({
         type: "success",
         message: "Usuário criado com sucesso!",
@@ -40,7 +55,7 @@ export default function Register() {
       });
 
       router.push("/onboarding");
-    } else {
+    } catch (error) {
       setStatus({
         type: "error",
         message: "Erro ao criar a conta",

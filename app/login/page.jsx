@@ -1,9 +1,8 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Input from "@/components/input";
 import Button from "@/components/button";
-import { navigate } from "next/dist/client/components/segment-cache/navigation";
 
 export default function Login() {
   const router = useRouter();
@@ -24,9 +23,22 @@ export default function Login() {
 
     if (!validate()) return;
 
-    const loginUserWeb = true;
+    try {
+      const response = await fetch("http://localhost:3333/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          user_email: user.email,
+          user_password: user.password,
+        }),
+      });
+      if (!response.ok) {
+        throw new Error("Erro no login");
+      }
 
-    if (loginUserWeb) {
       setStatus({
         type: "success",
         message: "Bem vindo novamente!",
@@ -39,7 +51,7 @@ export default function Login() {
       });
 
       router.push("/agenda");
-    } else {
+    } catch (error) {
       setStatus({
         type: "error",
         message: "Erro ao logar",
