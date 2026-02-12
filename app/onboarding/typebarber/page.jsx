@@ -12,12 +12,14 @@ export default function OnBoarding() {
   async function handleContinue() {
     try {
       switch (choice) {
-        case "barber":
-          await roleUser(choice);
-          router.push("/onboarding/typebarber");
+        case "employee":
+          router.push("/onboarding/employee");
           break;
-        case "customer":
+        case "professional":
           router.push("/onboarding/professional");
+          break;
+        case "owner":
+          router.push("/onboarding/owner");
           break;
       }
     } catch (error) {
@@ -26,24 +28,24 @@ export default function OnBoarding() {
   }
 
   function handleLeft() {
-    router.push("/register");
+    router.push("/onboarding");
   }
 
-  async function roleUser(choiceUser) {
+  async function barbeFunction(choiceUser) {
     const token = localStorage.getItem("token");
 
     if (!token) {
       throw new Error("Token não encontrado");
     }
 
-    const response = await fetch("http://localhost:3333/edit", {
-      method: "PATCH",
+    const response = await fetch("http://localhost:3333/barber", {
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
-        user_role: choiceUser,
+        barber_function: choiceUser,
       }),
     });
 
@@ -61,13 +63,13 @@ export default function OnBoarding() {
         <i className="bi bi-arrow-left"></i>
       </button>
 
-      <Bar value={50} />
+      <Bar value={52} />
 
       <div className="flex items-center justify-center mt-16">
         <article className="w-[30dvw]">
           <div className="flex flex-col gap-4 w-[30dvw]">
             <h2 className="text-[#0000d5] font-bold text-[35px] tracking-[1%] leading-[1.3]">
-              Como você vai usar o sistema?
+              Como você trabalha?
             </h2>
             <p className="text-[#757575] text-[25px] tracking-[2%] leading-relaxed">
               Escolha a opção que mais representa você.
@@ -76,16 +78,23 @@ export default function OnBoarding() {
 
           <div className="grid gap-6 mt-12 w-[30dvw]">
             <ChoiceCard
-              label="Sou cliente de alguma barbearia"
-              value="customer"
-              selected={choice === "customer"}
+              label="Sou funcionario de uma barbearia"
+              value="employee"
+              selected={choice === "employee"}
               onSelect={setChoice}
             />
 
             <ChoiceCard
-              label="Sou barbeiro ou possui uma barbearia"
-              value="barber"
-              selected={choice === "barber"}
+              label="Atendo clientes e gerencio minha agenda"
+              value="professional"
+              selected={choice === "professional"}
+              onSelect={setChoice}
+            />
+
+            <ChoiceCard
+              label="Gerencio a barbearia, equipe e pagamentos"
+              value="owner"
+              selected={choice === "owner"}
               onSelect={setChoice}
             />
           </div>
