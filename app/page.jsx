@@ -1,5 +1,9 @@
 export default function Home() {
   return (
-   <div></div>
+    <div>
+      <button>
+        <a href="/login">Login</a>
+      </button>
+    </div>
   );
 }

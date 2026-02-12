@@ -7,29 +7,36 @@ import Button from "@/components/button";
 export default function Login() {
   const router = useRouter();
 
-  const [user, setUser] = useState({
-    name: "",
-    email: "",
-    password: "",
-  });
+  const [checkingAuth, setCheckingAuth] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState({ name: "", email: "", password: "" });
+  const [status, setStatus] = useState({ type: "", message: "" });
 
-  const [status, setStatus] = useState({
-    type: "",
-    message: "",
-  });
+  useEffect(() => {
+    const token = localStorage.getItem("token");
 
+    if (token) {
+      router.replace("/agenda");
+    } else {
+      setCheckingAuth(false);
+    }
+  }, [router]);
+
+  if (checkingAuth) {
+    return null;
+  }
   const loginUser = async (e) => {
     e.preventDefault();
 
     if (!validate()) return;
 
     try {
+      setLoading(true);
       const response = await fetch("http://localhost:3333/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        credentials: "include",
         body: JSON.stringify({
           user_email: user.email,
           user_password: user.password,
@@ -38,6 +45,10 @@ export default function Login() {
       if (!response.ok) {
         throw new Error("Erro no login");
       }
+
+      const result = await response.json();
+
+      localStorage.setItem("token", result.token);
 
       setStatus({
         type: "success",
@@ -56,6 +67,8 @@ export default function Login() {
         type: "error",
         message: "Erro ao logar",
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -115,7 +128,7 @@ export default function Login() {
           </article>
 
           <Button variant="primary" type="submit">
-            Entrar
+            {loading ? "Entrando..." : "Entrar"}
           </Button>
         </form>
 

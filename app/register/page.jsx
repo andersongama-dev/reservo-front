@@ -1,23 +1,35 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { use, useState } from "react";
+import { useEffect, useState } from "react";
 import Input from "@/components/input";
 import Button from "@/components/button";
 
 export default function Register() {
   const router = useRouter();
 
+  const [checkingAuth, setCheckingAuth] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [user, setUser] = useState({
     name: "",
     email: "",
     password: "",
     confirmPassword: "",
   });
+  const [status, setStatus] = useState({ type: "", message: "" });
 
-  const [status, setStatus] = useState({
-    type: "",
-    message: "",
-  });
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      router.replace("/agenda");
+    } else {
+      setCheckingAuth(false);
+    }
+  }, [router]);
+
+  if (checkingAuth) {
+    return null;
+  }
 
   const createUser = async (e) => {
     e.preventDefault();
@@ -25,12 +37,12 @@ export default function Register() {
     if (!validate()) return;
 
     try {
+      setLoading(true);
       const response = await fetch("http://localhost:3333/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        credentials: "include",
         body: JSON.stringify({
           user_name: user.name,
           user_email: user.email,
@@ -41,6 +53,10 @@ export default function Register() {
       if (!response.ok) {
         throw new Error("Erro no registro");
       }
+
+      const result = await response.json();
+
+      localStorage.setItem("token", result.token);
 
       setStatus({
         type: "success",
@@ -60,6 +76,8 @@ export default function Register() {
         type: "error",
         message: "Erro ao criar a conta",
       });
+    } finally {
+      setLoading(false);
     }
   };
 
