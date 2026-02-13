@@ -13,12 +13,15 @@ export default function OnBoarding() {
     try {
       switch (choice) {
         case "employee":
+          barbeFunction(choice);
           router.push("/onboarding/employee");
           break;
         case "professional":
+          barbeFunction(choice);
           router.push("/onboarding/professional");
           break;
         case "owner":
+          barbeFunction(choice);
           router.push("/onboarding/owner");
           break;
       }
