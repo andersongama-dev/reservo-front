@@ -31,9 +31,30 @@ export default function CreateBarber() {
       phone: normalizedPhone,
     };
 
-    const createBarberWeb = true;
+    try {
+      const token = localStorage.getItem("token");
 
-    if (createBarberWeb) {
+      if (!token) {
+        throw new Error("Token não encontrado");
+      }
+
+      const response = await fetch("http://localhost:3333/barbershop", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          barbershop_name: barber.name,
+          barbershop_phone: barber.phone,
+          barbershop_city: barber.city,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Erro ao criar");
+      }
+
       setStatus({
         type: "success",
         message: "barbearia cadastrada com sucesso!",
@@ -45,8 +66,8 @@ export default function CreateBarber() {
         phone: "",
       });
 
-      router.push("/onboarding/owner/createbarber/addservices");
-    } else {
+      router.push("/onboarding/owner/addservices");
+    } catch (error) {
       setStatus({
         type: "error",
         message: "Erro ao criar barbearia",
