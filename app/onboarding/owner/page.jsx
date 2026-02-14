@@ -76,7 +76,7 @@ export default function CreateBarber() {
   };
 
   function handleLeft() {
-    router.push("/onboarding/owner/");
+    router.push("/onboarding/typebarber");
   }
 
   function isValidBRPhone(phone) {

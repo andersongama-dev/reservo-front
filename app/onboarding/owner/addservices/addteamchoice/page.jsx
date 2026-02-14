@@ -12,9 +12,7 @@ export default function AddTeamChoice() {
   function handleContinue() {
     switch (choice) {
       case "now":
-        router.push(
-          "/onboarding/owner/createbarber/addservices/addteamchoice/addteam",
-        );
+        router.push("/onboarding/owner/addservices/addteamchoice/addteam");
         break;
       case "alone":
         router.push("/agenda");
@@ -23,7 +21,7 @@ export default function AddTeamChoice() {
   }
 
   function handleLeft() {
-    router.push("/onboarding/owner/createbarber/addservices");
+    router.push("/onboarding/owner/addservices");
   }
 
   return (
