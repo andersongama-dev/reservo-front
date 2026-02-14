@@ -24,9 +24,30 @@ export default function AddServices() {
 
     if (!validate()) return;
 
-    const addServiceWeb = true;
+    try {
+      const token = localStorage.getItem("token");
 
-    if (addServiceWeb) {
+      if (!token) {
+        throw new Error("Token não encotrado");
+      }
+
+      const response = await fetch("http://localhost:3333/service", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          service_name: service.name,
+          service_duration: service.time,
+          service_price: service.price,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Erro ao criar");
+      }
+
       setStatus({
         type: "success",
         message: "Serviço criado com sucesso!",
@@ -39,7 +60,7 @@ export default function AddServices() {
       });
 
       router.push("/agenda");
-    } else {
+    } catch (error) {
       setStatus({
         type: "error",
         message: "Erro ao adicionar serviço, tente novamente",
@@ -48,7 +69,7 @@ export default function AddServices() {
   };
 
   function handleLeft() {
-    router.push("/onboarding/");
+    router.push("/onboarding/typebarber");
   }
 
   function validate() {

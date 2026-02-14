@@ -44,7 +44,7 @@ export default function AddTeam() {
   };
 
   function handleLeft() {
-    router.push("/onboarding/owner/createbarber/addservices/addteamchoice");
+    router.push("/onboarding/owner/addservices/addteamchoice");
   }
 
   function validate() {
