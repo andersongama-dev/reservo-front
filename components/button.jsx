@@ -12,7 +12,7 @@ export default function Button({
     relative overflow-hidden
     w-full px-6 py-4 rounded-lg
     font-semibold transition-all duration-200
-    active:scale-95 mt-[32px]
+    active:scale-95 mt-[32px] cursor-pointer
   `;
 
   const variants = {

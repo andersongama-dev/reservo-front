@@ -1,4 +1,4 @@
-export default function ServicesRow({ name, price, time, status }) {
+export default function ServicesRow({ id, name, price, time, status }) {
   const isActive = Boolean(status);
 
   const statusMessage = isActive ? "Ativo" : "Inativo";
