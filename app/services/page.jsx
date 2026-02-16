@@ -1,18 +1,40 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Sidebar from "@/components/sidebar";
 import ServicesRow from "@/components/services";
 
 export default function Services() {
-  const servicesList = [
-    { name: "Corte simples", price: "R$ 40,00", time: "40", status: "Ativo" },
-    {
-      name: "Corte na tesoura",
-      price: "R$ 45,00",
-      time: "60",
-      status: "Ativo",
-    },
-    { name: "Corte e barba", price: "R$ 120,00", time: "100", status: "Ativo" },
-    { name: "Barba", price: "R$ 80,00", time: "60", status: "Ativo" },
-  ];
+  const [services, setServices] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadServices() {
+      try {
+        const token = localStorage.getItem("token");
+
+        if (!token) throw new Error("Token não encontrado");
+
+        const res = await fetch("http://localhost:3333/service/all", {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!res.ok) throw new Error("Erro ao buscar serviços");
+
+        const data = await res.json();
+        setServices(data.services);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadServices();
+  }, []);
 
   return (
     <div className="flex min-h-screen">
@@ -42,14 +64,15 @@ export default function Services() {
             </thead>
 
             <tbody className="text-[#757575]">
-              {servicesList.map((service) => (
+              {services.map((service) => (
                 <ServicesRow
-                  key={service.name}
-                  name={service.name}
-                  price={service.price}
-                  time={service.time}
-                  status={service.status}
-                ></ServicesRow>
+                  key={service.serviceId}
+                  id={service.serviceId}
+                  name={service.serviceName}
+                  price={service.servicePrice}
+                  time={service.serviceDuration}
+                  status={service.serviceStatus}
+                />
               ))}
             </tbody>
           </table>
