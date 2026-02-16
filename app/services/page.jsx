@@ -3,10 +3,12 @@
 import { useEffect, useState } from "react";
 import Sidebar from "@/components/sidebar";
 import ServicesRow from "@/components/services";
+import AddService from "@/components/addservices";
 
 export default function Services() {
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [addOpen, setAddOpen] = useState(false);
 
   useEffect(() => {
     async function loadServices() {
@@ -46,7 +48,10 @@ export default function Services() {
             Serviços
           </h3>
 
-          <button className="py-2 px-4 bg-[#0000d5] text-white text-base font-semibold flex gap-4 tracking-[2%] leading-relaxed rounded items-center cursor-pointer">
+          <button
+            onClick={() => setAddOpen(true)}
+            className="py-2 px-4 bg-[#0000d5] text-white text-base font-semibold flex gap-4 tracking-[2%] leading-relaxed rounded items-center cursor-pointer"
+          >
             <i className="bi bi-plus"></i> Adicionar novo
           </button>
         </div>
@@ -78,6 +83,10 @@ export default function Services() {
           </table>
         </article>
       </main>
+
+      {addOpen && (
+        <AddService menuTogle={addOpen} onClose={() => setAddOpen(false)} />
+      )}
     </div>
   );
 }
