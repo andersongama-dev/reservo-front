@@ -1,16 +1,26 @@
 export default function ServicesRow({ name, price, time, status }) {
+  const isActive = Boolean(status);
+
+  const statusMessage = isActive ? "Ativo" : "Inativo";
+
+  const statusClass = isActive
+    ? "bg-[#8afc73] text-black"
+    : "bg-gray-300 text-gray-700";
+
   return (
     <tr className="h-10">
       <td>{name}</td>
       <td>{price}</td>
       <td>{time}</td>
       <td>
-        <span className="text-[13px] text-black py-1 px-5 bg-[#8afc73] font-semibold rounded-full">
-          {status}
+        <span
+          className={`text-[13px] py-1 px-5 font-semibold rounded-full ${statusClass}`}
+        >
+          {statusMessage}
         </span>
       </td>
       <td className="flex gap-4 items-center">
-        <button className="w-6 h-h-10 text-orange-600 text-[16px] flex items-center justify-center">
+        <button className="w-6 h-10 text-orange-600 text-[16px] flex items-center justify-center">
           <i className="bi bi-pencil-square"></i>
         </button>
 
