@@ -68,46 +68,52 @@ export default function AddService({ onClose }) {
   }
 
   return (
-    <article className="fixed right-0 p-8 bg-white border-l h-dvh border-[#d6d6d6]">
-      <div className="flex justify-between items-center">
-        <h3 className="text-3xl text-[#0000d5] leading-relaxed tracking-[2%] font-semibold">
-          Adicionar serviço
-        </h3>
+    <div className="fixed inset-0 z-99999">
+      <div className="absolute inset-0 bg-black/40" onClick={onClose} />
 
-        <button
-          onClick={onClose}
-          className="text-2xl text-[#757575] cursor-pointer"
-        >
-          <i className="bi bi-x"></i>
-        </button>
-      </div>
+      <article className="absolute right-0 top-0 p-8 bg-white border-l h-dvh border-[#d6d6d6] z-10">
+        <div className="flex justify-between items-center">
+          <h3 className="text-3xl text-[#0000d5] leading-relaxed tracking-[2%] font-semibold">
+            Adicionar serviço
+          </h3>
 
-      <div className="w-[30dvw] flex flex-col gap-8 mt-16">
-        <div className="flex flex-col gap-6">
-          <Input
-            inputType="text"
-            inputPlaceholder="Nome do serviço"
-            value={service.name}
-            onChange={(e) => setService({ ...service, name: e.target.value })}
-          />
-          <Input
-            inputType="number"
-            inputPlaceholder="Duração (min)"
-            value={service.time}
-            onChange={(e) => setService({ ...service, time: e.target.value })}
-          />
-          <Input
-            inputType="number"
-            inputPlaceholder="Preço"
-            value={service.price}
-            onChange={(e) => setService({ ...service, price: e.target.value })}
-          />
+          <button
+            onClick={onClose}
+            className="text-2xl text-[#757575] cursor-pointer"
+          >
+            <i className="bi bi-x"></i>
+          </button>
         </div>
 
-        <Button variant="primary" onClick={addService}>
-          Continuar
-        </Button>
-      </div>
-    </article>
+        <div className="w-[30dvw] flex flex-col gap-8 mt-16">
+          <div className="flex flex-col gap-6">
+            <Input
+              inputType="text"
+              inputPlaceholder="Nome do serviço"
+              value={service.name}
+              onChange={(e) => setService({ ...service, name: e.target.value })}
+            />
+            <Input
+              inputType="number"
+              inputPlaceholder="Duração (min)"
+              value={service.time}
+              onChange={(e) => setService({ ...service, time: e.target.value })}
+            />
+            <Input
+              inputType="number"
+              inputPlaceholder="Preço"
+              value={service.price}
+              onChange={(e) =>
+                setService({ ...service, price: e.target.value })
+              }
+            />
+          </div>
+
+          <Button variant="primary" onClick={addService}>
+            Continuar
+          </Button>
+        </div>
+      </article>
+    </div>
   );
 }
