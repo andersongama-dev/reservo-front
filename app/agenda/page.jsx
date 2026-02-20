@@ -23,6 +23,14 @@ export default function Agenda() {
     { time: "13-00" },
     { time: "14-00" },
     { time: "15-00" },
+    { time: "16-00" },
+    { time: "17-00" },
+    { time: "18-00" },
+    { time: "19-00" },
+    { time: "20-00" },
+    { time: "21-00" },
+    { time: "22-00" },
+    { time: "23-00" },
   ];
 
   const week = {
@@ -131,7 +139,7 @@ export default function Agenda() {
             </div>
           </div>
 
-          <div className="grid grid-cols-7 grid-rows-7 w-full gap-2 px-1">
+          <div className="grid grid-cols-7 grid-rows-15 w-full gap-2 px-1">
             {grid.map((row, rowIndex) =>
               row.map((cell, colIndex) => (
                 <div key={`${rowIndex}-${colIndex}`}>

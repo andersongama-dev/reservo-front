@@ -85,7 +85,7 @@
 }
 
 .btn-menu {
-  position: absolute;
+  position: fixed;
   top: 36px;
   left: 84px;
   padding: 4px;
