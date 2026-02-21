@@ -25,17 +25,11 @@ export default function AddServices() {
     if (!validate()) return;
 
     try {
-      const token = localStorage.getItem("token");
-
-      if (!token) {
-        throw new Error("Token não encotrado");
-      }
-
       const response = await fetch("http://localhost:3333/service", {
         method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           service_name: service.name,

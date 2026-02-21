@@ -8,8 +8,8 @@ import Button from "@/components/button";
 export default function Employee() {
   const router = useRouter();
 
-  const [barber, setBarber] = useState({
-    barber: "",
+  const [professional, setProfessional] = useState({
+    code: "",
   });
 
   const [status, setStatus] = useState({
@@ -17,47 +17,68 @@ export default function Employee() {
     message: "",
   });
 
-  const set = async (e) => {
-    e.preventDefault();
-
-    if (!validate()) return;
-
-    const setBarberWeb = true;
-
-    if (setBarberWeb) {
-      setStatus({
-        type: "success",
-        message: "Usuário criado com sucesso!",
-      });
-
-      setBarber({
-        barber: "",
-      });
-
-      router.push("/agenda");
-    } else {
-      setStatus({
-        type: "error",
-        message: "Erro ao vincular com a barbearia",
-      });
-    }
-  };
-
   function handleLeft() {
     router.push("/onboarding");
   }
 
   function validate() {
-    if (!barber.barber) {
+    if (!professional.code) {
       setStatus({
         type: "error",
-        message: "Preencha todos os campos",
+        message: "Preencha todos os campos obrigatórios",
       });
       return false;
     }
 
     return true;
   }
+
+  const invitationBarber = async (e) => {
+    e.preventDefault();
+
+    if (!validate) {
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:3333/invitation", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          invitation_code: professional.code,
+          invitation_by: "barber",
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Erro ao enviar convite");
+      }
+
+      setStatus({
+        type: "success",
+        message: "convite enviado com sucesso cadastrada com sucesso!",
+      });
+
+      await fetch("http://localhost:3333/onboarding", {
+        method: "PATCH",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({}),
+      });
+
+      router.push("/agenda");
+    } catch (error) {
+      setStatus({
+        type: "error",
+        message: "Erro ao enviar convite",
+      });
+    }
+  };
 
   return (
     <div>
@@ -81,14 +102,17 @@ export default function Employee() {
             </p>
           </div>
 
-          <form onSubmit={set}>
+          <form onSubmit={invitationBarber}>
             <div className="mt-12 w-[30dvw]">
               <Input
                 inputType="text"
-                inputPlaceholder="Nome"
-                value={barber.barber}
+                inputPlaceholder="Código da barbearia"
+                value={professional.code}
                 onChange={(e) =>
-                  setBarber({ ...barber, barber: e.target.value })
+                  setProfessional({
+                    ...professional,
+                    code: e.target.value,
+                  })
                 }
               />
 

@@ -30,17 +30,11 @@ export default function OnBoarding() {
   }
 
   async function roleUser(choiceUser) {
-    const token = localStorage.getItem("token");
-
-    if (!token) {
-      throw new Error("Token não encontrado");
-    }
-
     const response = await fetch("http://localhost:3333/edit", {
       method: "PATCH",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
         user_role: choiceUser,
