@@ -53,6 +53,15 @@ export default function AddServices() {
         price: "",
       });
 
+      await fetch("http://localhost:3333/onboarding", {
+        method: "PATCH",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({}),
+      });
+
       router.push("/agenda");
     } catch (error) {
       setStatus({
