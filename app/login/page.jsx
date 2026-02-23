@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Input from "@/components/input";
 import Button from "@/components/button";
@@ -7,24 +7,10 @@ import Button from "@/components/button";
 export default function Login() {
   const router = useRouter();
 
-  const [checkingAuth, setCheckingAuth] = useState(true);
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState({ name: "", email: "", password: "" });
   const [status, setStatus] = useState({ type: "", message: "" });
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-
-    if (token) {
-      router.replace("/agenda");
-    } else {
-      setCheckingAuth(false);
-    }
-  }, [router]);
-
-  if (checkingAuth) {
-    return null;
-  }
   const loginUser = async (e) => {
     e.preventDefault();
 
@@ -34,6 +20,7 @@ export default function Login() {
       setLoading(true);
       const response = await fetch("http://localhost:3333/login", {
         method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
@@ -47,8 +34,6 @@ export default function Login() {
       }
 
       const result = await response.json();
-
-      localStorage.setItem("token", result.token);
 
       setStatus({
         type: "success",

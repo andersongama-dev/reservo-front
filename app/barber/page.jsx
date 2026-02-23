@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Sidebar from "@/components/sidebar";
 import Input from "@/components/input";
 import Button from "@/components/button";
@@ -8,53 +8,14 @@ import Order from "@/components/order";
 
 export default function BarberProfile() {
   const [barberDate, setBarberDate] = useState({
-    name: "Ruan cortes",
-    phone: "(19) 996779283",
-    city: "Serra Negra",
-    code: "BDK-3409",
+    id: null,
+    name: "",
+    phone: "",
+    city: "",
+    code: "",
   });
 
-  const owners = [
-    {
-      name: "Ruan",
-      email: "ruan@gmail.com",
-      type: "Dono principal",
-      status: "Ativo",
-    },
-    {
-      name: "Pedro",
-      email: "ruan@gmail.com",
-      type: "Dono principal",
-      status: "Ativo",
-    },
-    {
-      name: "Lucas",
-      email: "ruan@gmail.com",
-      type: "Dono principal",
-      status: "Ativo",
-    },
-  ];
-
-  const orders = [
-    {
-      name: "Anderson Gama",
-      email: "andersongama@gmail.com",
-      func: "Barbeiro",
-      status: "Pendente",
-    },
-    {
-      name: "Juan Gama",
-      email: "juangama@gmail.com",
-      func: "Barbeiro",
-      status: "Pendente",
-    },
-    {
-      name: "Mirela Gama",
-      email: "mirelagmama@gmail.com",
-      func: "Barbeiro",
-      status: "Pendente",
-    },
-  ];
+  const [orders, setOrders] = useState([]);
 
   const [status, setStatus] = useState({
     type: "",
@@ -63,7 +24,69 @@ export default function BarberProfile() {
 
   const [disabled, setDisable] = useState(true);
 
-  const handleEditToggle = (e) => {
+  useEffect(() => {
+    const barberme = async () => {
+      const response = await fetch("http://localhost:3333/barbershop/me", {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Erro ao buscar");
+      }
+
+      const data = await response.json();
+
+      setBarberDate({
+        id: data.barber.barbershopId,
+        name: data.barber.barbershopName || "",
+        phone: data.barber.barbershopPhone || "",
+        city: data.barber.barbershopCity || "",
+        code: data.barber.invitationCode || "",
+      });
+    };
+
+    const invitations = async () => {
+      const response = await fetch(
+        "http://localhost:3333/invitation/bybarbershop",
+        {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error("Erro ao buscar");
+      }
+
+      const data = await response.json();
+
+      console.log(data);
+
+      const formattedInvites = data.invitations.map((invite) => ({
+        id: invite.invitationId,
+        name: invite.barber?.user?.userName || "",
+        email: invite.barber?.user?.userEmail || "",
+        //func: invite.barber?.barberFunction,
+        func: "Barbeiro",
+        status: invite.invitationStatus,
+      }));
+
+      setOrders(formattedInvites);
+    };
+
+    barberme();
+
+    invitations();
+  }, []);
+
+  const handleEditToggle = async (e) => {
     e.preventDefault();
 
     if (disabled) {
@@ -79,25 +102,34 @@ export default function BarberProfile() {
       return;
     }
 
+    const response = await fetch("http://localhost:3333/barbershop/edit", {
+      method: "PATCH",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        barbershop_id: barberDate.id,
+        barbershop_name: barberDate.name,
+        barbershop_phone: barberDate.phone,
+        barbershop_city: barberDate.city,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Erro ao editar");
+    }
+
     setStatus({
       type: "success",
-      message: "Dados salvos com sucesso",
+      message: "",
     });
 
     setDisable(true);
   };
 
-  function isValidBRPhone(phone) {
-    if (!/^\d{10,11}$/.test(phone)) return false;
-    if (phone.length === 11 && !/^(\d{2})9/.test(phone)) {
-      return false;
-    }
-
-    return true;
-  }
-
   function formatBRPhone(value) {
-    const digits = value.replace(/\D/g, "").slice(0, 11);
+    const digits = (value || "").replace(/\D/g, "").slice(0, 11);
 
     if (digits.length <= 10) {
       return digits
@@ -108,6 +140,20 @@ export default function BarberProfile() {
     return digits
       .replace(/^(\d{2})(\d)/, "($1) $2")
       .replace(/(\d{5})(\d)/, "$1-$2");
+  }
+
+  function isValidBRPhone(value) {
+    const digits = (value || "").replace(/\D/g, "");
+
+    if (digits.length !== 10 && digits.length !== 11) {
+      return false;
+    }
+
+    if (digits.startsWith("0")) {
+      return false;
+    }
+
+    return true;
   }
 
   return (
@@ -171,13 +217,6 @@ export default function BarberProfile() {
               />
             </div>
 
-            <div
-              className={`flex items-center w-[30dvw] text-base
-                          ${status.type === "error" ? "text-red-600" : "text-green-600"}`}
-            >
-              {status.message && <span className="">{status.message}</span>}
-            </div>
-
             <div className="w-[30dvw] flex justify-center mx-auto animate-fade-in">
               <Button
                 variant="primary"
@@ -189,31 +228,7 @@ export default function BarberProfile() {
             </div>
           </article>
 
-          <article className="w-full">
-            <table className="w-full text-left leading-relaxed tracking-[2%]">
-              <thead>
-                <tr className="text-[#0000d5]">
-                  <th>Nome</th>
-                  <th>Email</th>
-                  <th>Tipo</th>
-                  <th>Status</th>
-                  <th>Ações</th>
-                </tr>
-              </thead>
-
-              <tbody className="text-[#757575]">
-                {owners.map((owner) => (
-                  <Owner
-                    key={owner.name}
-                    name={owner.name}
-                    email={owner.email}
-                    type={owner.type}
-                    status={owner.status}
-                  />
-                ))}
-              </tbody>
-            </table>
-          </article>
+          <article className="w-full"></article>
         </div>
 
         <div className="mt-12">
@@ -236,7 +251,8 @@ export default function BarberProfile() {
               <tbody className="text-[#757575]">
                 {orders.map((order) => (
                   <Order
-                    key={order.name}
+                    key={order.id}
+                    id={order.id}
                     name={order.name}
                     email={order.email}
                     func={order.func}

@@ -35,17 +35,11 @@ export default function OnBoarding() {
   }
 
   async function barbeFunction(choiceUser) {
-    const token = localStorage.getItem("token");
-
-    if (!token) {
-      throw new Error("Token não encontrado");
-    }
-
     const response = await fetch("http://localhost:3333/barber", {
       method: "POST",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
         barber_function: choiceUser,

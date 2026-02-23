@@ -13,16 +13,12 @@ export default function ServicesRow({ id, name, price, time, status }) {
 
   const deleteService = async () => {
     try {
-      const token = localStorage.getItem("token");
-      if (!token) throw new Error("Token não encontrado");
-
       const response = await fetch(
         `http://localhost:3333/service/delete/${id}`,
         {
           method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          credentials: "include",
+          headers: {},
         },
       );
 

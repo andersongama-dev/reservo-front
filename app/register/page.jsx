@@ -7,7 +7,6 @@ import Button from "@/components/button";
 export default function Register() {
   const router = useRouter();
 
-  const [checkingAuth, setCheckingAuth] = useState(true);
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState({
     name: "",
@@ -16,20 +15,6 @@ export default function Register() {
     confirmPassword: "",
   });
   const [status, setStatus] = useState({ type: "", message: "" });
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-
-    if (token) {
-      router.replace("/agenda");
-    } else {
-      setCheckingAuth(false);
-    }
-  }, [router]);
-
-  if (checkingAuth) {
-    return null;
-  }
 
   const createUser = async (e) => {
     e.preventDefault();
@@ -40,6 +25,7 @@ export default function Register() {
       setLoading(true);
       const response = await fetch("http://localhost:3333/register", {
         method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
@@ -53,10 +39,6 @@ export default function Register() {
       if (!response.ok) {
         throw new Error("Erro no registro");
       }
-
-      const result = await response.json();
-
-      localStorage.setItem("token", result.token);
 
       setStatus({
         type: "success",

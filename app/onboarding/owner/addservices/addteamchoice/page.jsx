@@ -9,16 +9,28 @@ export default function AddTeamChoice() {
   const [choice, setChoice] = useState("");
   const router = useRouter();
 
-  function handleContinue() {
+  async function handleContinue() {
     switch (choice) {
       case "now":
         router.push("/onboarding/owner/addservices/addteamchoice/addteam");
         break;
       case "alone":
-        router.push("/agenda");
+        await complete();
+        window.location.href = "/agenda";
         break;
     }
   }
+
+  const complete = async () => {
+    await fetch("http://localhost:3333/onboarding", {
+      method: "PATCH",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({}),
+    });
+  };
 
   function handleLeft() {
     router.push("/onboarding/owner/addservices");

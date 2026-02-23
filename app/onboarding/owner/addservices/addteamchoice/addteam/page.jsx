@@ -17,32 +17,6 @@ export default function AddTeam() {
     message: "",
   });
 
-  const addProfessional = async (e) => {
-    e.preventDefault();
-
-    if (!validate()) return;
-
-    const addProfessionalWeb = true;
-
-    if (addProfessionalWeb) {
-      setStatus({
-        type: "success",
-        message: "Barbeiro adicionado com sucesso!",
-      });
-
-      setProfessional({
-        code: "",
-      });
-
-      router.push("/agenda");
-    } else {
-      setStatus({
-        type: "error",
-        message: "Erro ao adicionar barbeiro, tente novamente",
-      });
-    }
-  };
-
   function handleLeft() {
     router.push("/onboarding/owner/addservices/addteamchoice");
   }
@@ -58,6 +32,44 @@ export default function AddTeam() {
 
     return true;
   }
+
+  const invitationBarber = async (e) => {
+    e.preventDefault();
+
+    if (!validate) {
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:3333/invitation", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          invitation_code: professional.code,
+          invitation_by: "barbershop",
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Erro ao enviar convite");
+      }
+
+      setStatus({
+        type: "success",
+        message: "convite enviado com sucesso cadastrada com sucesso!",
+      });
+
+      router.push("/agenda");
+    } catch (error) {
+      setStatus({
+        type: "error",
+        message: "Erro ao enviar convite",
+      });
+    }
+  };
 
   return (
     <div>
@@ -81,7 +93,7 @@ export default function AddTeam() {
             </p>
           </div>
 
-          <form onSubmit={addProfessional}>
+          <form onSubmit={invitationBarber}>
             <div className="grid gap-6 mt-12 w-[30dvw]">
               <Input
                 inputType="text"

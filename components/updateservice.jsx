@@ -40,14 +40,11 @@ export default function UpdateService({
     if (!validate()) return;
 
     try {
-      const token = localStorage.getItem("token");
-      if (!token) throw new Error("Token não encontrado");
-
       const response = await fetch("http://localhost:3333/service/update", {
         method: "PATCH",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           service_id: service.id,

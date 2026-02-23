@@ -1,13 +1,35 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function Sidebar({ activeScreen }) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [barberFunction, setBarberFunction] = useState(null);
 
   const toggleMenu = () => {
     setMenuOpen((prev) => !prev);
   };
+
+  useEffect(() => {
+    const fetchBarberFunction = async () => {
+      try {
+        const response = await fetch("http://localhost:3333/barber/function", {
+          credentials: "include",
+        });
+
+        if (!response.ok) {
+          throw new Error("Erro ao buscar");
+        }
+
+        const data = await response.json();
+        setBarberFunction(data.barber_function);
+      } catch (error) {
+        console.error("Erro ao buscar barber_function:", error);
+      }
+    };
+
+    fetchBarberFunction();
+  }, []);
 
   const menuItems = [
     {
@@ -32,6 +54,27 @@ export default function Sidebar({ activeScreen }) {
     { id: "barbearia", icon: "bi-person", label: "Barbearia", link: "barber" },
   ];
 
+  const filteredMenuItems = menuItems.filter((item) => {
+    // team e barber → somente owner
+    if (
+      (item.link === "barber" || item.link === "team") &&
+      barberFunction !== "owner"
+    ) {
+      return false;
+    }
+
+    // services → owner ou professional
+    if (
+      item.link === "services" &&
+      barberFunction !== "owner" &&
+      barberFunction !== "professional"
+    ) {
+      return false;
+    }
+
+    return true;
+  });
+
   return (
     <div>
       <button
@@ -53,7 +96,7 @@ export default function Sidebar({ activeScreen }) {
 
           <div className="mt-16">
             <ul className="grid gap-8 text-2xl text-[#757575]">
-              {menuItems.map((item) => (
+              {filteredMenuItems.map((item) => (
                 <li key={item.id}>
                   <a
                     href={item.link}
@@ -62,7 +105,9 @@ export default function Sidebar({ activeScreen }) {
                     }`}
                   >
                     <i
-                      className={`bi ${item.icon} ${activeScreen === item.id ? "text-[#0000d5]" : ""}`}
+                      className={`bi ${item.icon} ${
+                        activeScreen === item.id ? "text-[#0000d5]" : ""
+                      }`}
                     ></i>
                     <p className={`text-base ${menuOpen ? "" : "close"}`}>
                       {item.label}
@@ -86,7 +131,9 @@ export default function Sidebar({ activeScreen }) {
                 }`}
               >
                 <i
-                  className={`bi bi-gear ${activeScreen === "configuracoes" ? "text-[#0000d5]" : ""}`}
+                  className={`bi bi-gear ${
+                    activeScreen === "configuracoes" ? "text-[#0000d5]" : ""
+                  }`}
                 ></i>
                 <p className={`text-base ${menuOpen ? "" : "close"}`}>
                   Configurações

@@ -1,12 +1,18 @@
-export default function Order({ name, email, func, status }) {
+export default function Order({ id, name, email, func, status }) {
+  const label = status === true ? "Pendente" : "Aceito";
+
+  const bgColor = status === true ? "bg-orange-400" : "bg-green-500";
+
   return (
     <tr className="h-10">
       <td>{name}</td>
       <td>{email}</td>
       <td>{func}</td>
       <td>
-        <span className="text-[13px] text-black py-1 px-5 bg-orange-400 font-semibold rounded-full">
-          {status}
+        <span
+          className={`text-[13px] text-white py-1 px-5 ${bgColor} font-semibold rounded-full`}
+        >
+          {label}
         </span>
       </td>
 

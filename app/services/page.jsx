@@ -13,23 +13,18 @@ export default function Services() {
   useEffect(() => {
     async function loadServices() {
       try {
-        const token = localStorage.getItem("token");
-
-        if (!token) throw new Error("Token não encontrado");
-
-        const res = await fetch("http://localhost:3333/service/all", {
+        const response = await fetch("http://localhost:3333/service/all", {
           method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          credentials: "include",
+          headers: {},
         });
 
-        if (!res.ok) throw new Error("Erro ao buscar serviços");
+        if (!response.ok) throw new Error("Erro ao buscar serviços");
 
-        const data = await res.json();
+        const data = await response.json();
         setServices(data.services);
-      } catch (err) {
-        console.error(err);
+      } catch (error) {
+        console.error(error);
       } finally {
         setLoading(false);
       }
