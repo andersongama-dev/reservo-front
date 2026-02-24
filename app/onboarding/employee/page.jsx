@@ -59,7 +59,7 @@ export default function Employee() {
 
       setStatus({
         type: "success",
-        message: "convite enviado com sucesso cadastrada com sucesso!",
+        message: "convite enviado com sucesso",
       });
 
       await fetch("http://localhost:3333/onboarding", {

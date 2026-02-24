@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import Sidebar from "@/components/sidebar";
 import Input from "@/components/input";
 import Button from "@/components/button";
-import Owner from "@/components/owner";
+import AddInvitation from "@/components/addinvitation";
 import Order from "@/components/order";
 
 export default function BarberProfile() {
@@ -23,66 +23,71 @@ export default function BarberProfile() {
   });
 
   const [disabled, setDisable] = useState(true);
+  const [addOpen, setAddOpen] = useState(false);
 
   useEffect(() => {
     const barberme = async () => {
-      const response = await fetch("http://localhost:3333/barbershop/me", {
-        method: "GET",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error("Erro ao buscar");
-      }
-
-      const data = await response.json();
-
-      setBarberDate({
-        id: data.barber.barbershopId,
-        name: data.barber.barbershopName || "",
-        phone: data.barber.barbershopPhone || "",
-        city: data.barber.barbershopCity || "",
-        code: data.barber.invitationCode || "",
-      });
-    };
-
-    const invitations = async () => {
-      const response = await fetch(
-        "http://localhost:3333/invitation/bybarbershop",
-        {
+      try {
+        const response = await fetch("http://localhost:3333/barbershop/me", {
           method: "GET",
           credentials: "include",
           headers: {
             "Content-Type": "application/json",
           },
-        },
-      );
+        });
 
-      if (!response.ok) {
-        throw new Error("Erro ao buscar");
+        if (!response.ok) {
+          throw new Error("Erro ao buscar");
+        }
+
+        const data = await response.json();
+
+        setBarberDate({
+          id: data.barber.barbershopId,
+          name: data.barber.barbershopName || "",
+          phone: data.barber.barbershopPhone || "",
+          city: data.barber.barbershopCity || "",
+          code: data.barber.invitationCode || "",
+        });
+      } catch (error) {
+        console.error(error);
       }
+    };
 
-      const data = await response.json();
+    const invitations = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:3333/invitation/bybarbershop",
+          {
+            method: "GET",
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          },
+        );
 
-      console.log(data);
+        if (!response.ok) {
+          throw new Error("Erro ao buscar");
+        }
 
-      const formattedInvites = data.invitations.map((invite) => ({
-        id: invite.invitationId,
-        name: invite.barber?.user?.userName || "",
-        email: invite.barber?.user?.userEmail || "",
-        //func: invite.barber?.barberFunction,
-        func: "Barbeiro",
-        status: invite.invitationStatus,
-      }));
+        const data = await response.json();
 
-      setOrders(formattedInvites);
+        const formattedInvites = data.invitations.map((invite) => ({
+          id: invite.invitationId,
+          name: invite.barber?.user?.userName || "",
+          email: invite.barber?.user?.userEmail || "",
+          func: "Barbeiro",
+          status: invite.invitationStatus,
+        }));
+
+        setOrders(formattedInvites);
+      } catch (error) {
+        console.error(error);
+      }
     };
 
     barberme();
-
     invitations();
   }, []);
 
@@ -166,7 +171,10 @@ export default function BarberProfile() {
             Dados da barbearia
           </h3>
 
-          <button className="py-2 px-4 bg-[#0000d5] text-white text-base font-semibold flex gap-4 tracking-[2%] leading-relaxed rounded items-center cursor-pointer">
+          <button
+            onClick={() => setAddOpen(true)}
+            className="py-2 px-4 bg-[#0000d5] text-white text-base font-semibold flex gap-4 tracking-[2%] leading-relaxed rounded items-center cursor-pointer"
+          >
             <i className="bi bi-plus"></i> Convidar
           </button>
         </div>
@@ -264,6 +272,14 @@ export default function BarberProfile() {
           </article>
         </div>
       </main>
+
+      {addOpen && (
+        <AddInvitation
+          menuTogle={addOpen}
+          by={"barbershop"}
+          onClose={() => setAddOpen(false)}
+        />
+      )}
     </div>
   );
 }
