@@ -67,11 +67,11 @@ export default function Agenda() {
       cliente: "Pedro",
       service: "Corte e barba",
       dia: "Terça",
-      horario: 12,
+      horario: 15,
     },
   ];
 
-  const grid = Array.from({ length: 9 }, () => Array(7).fill(null));
+  const grid = Array.from({ length: 15 }, () => Array(7).fill(null));
 
   agendamentos.forEach((agendamento) => {
     const diaIndex = week[agendamento.dia];
