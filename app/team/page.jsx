@@ -1,12 +1,45 @@
+"use client";
+import { useEffect, useState } from "react";
 import Sidebar from "@/components/sidebar";
 import TeamRow from "@/components/team";
+import AddInvitation from "@/components/addinvitation";
 
-export default function Services() {
-  const teamList = [
-    { name: "Ruan cortes", func: "Dono", operation: true, status: "Ativo" },
-    { name: "Samuel", func: "Barbeiro", operation: true, status: "Ativo" },
-    { name: "Rian", func: "Barbeiro", operation: true, status: "Ativo" },
-  ];
+export default function Team() {
+  const [teamList, setTeamList] = useState([]);
+  const [addOpen, setAddOpen] = useState(false);
+
+  useEffect(() => {
+    const getTeam = async () => {
+      try {
+        const response = await fetch("http://localhost:3333/employee/all", {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Erro ao buscar");
+        }
+
+        const data = await response.json();
+
+        const formattedTeam = data.employees.map((employee) => ({
+          id: employee.barberId,
+          name: employee.user.userName,
+          func: employee.barberFunction,
+          status: employee.user.userStatus,
+        }));
+
+        setTeamList(formattedTeam);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    getTeam();
+  }, []);
 
   return (
     <div className="flex min-h-screen">
@@ -18,8 +51,11 @@ export default function Services() {
             Funcionarios
           </h3>
 
-          <button className="py-2 px-4 bg-[#0000d5] text-white text-base font-semibold flex gap-4 tracking-[2%] leading-relaxed rounded items-center cursor-pointer">
-            <i className="bi bi-plus"></i> Adicionar novo
+          <button
+            onClick={() => setAddOpen(true)}
+            className="py-2 px-4 bg-[#0000d5] text-white text-base font-semibold flex gap-4 tracking-[2%] leading-relaxed rounded items-center cursor-pointer"
+          >
+            <i className="bi bi-plus"></i> Convidar
           </button>
         </div>
 
@@ -29,7 +65,7 @@ export default function Services() {
               <tr className="text-[#0000d5]">
                 <th>Nome</th>
                 <th>Função</th>
-                <th>Atende clientes</th>
+                {/* <th>Atende clientes</th> */}
                 <th>Status</th>
                 <th>Ações</th>
               </tr>
@@ -38,16 +74,25 @@ export default function Services() {
             <tbody className="text-[#757575]">
               {teamList.map((team) => (
                 <TeamRow
-                  key={team.name}
+                  id={team.id}
+                  key={team.id}
                   name={team.name}
                   func={team.func}
                   status={team.status}
-                ></TeamRow>
+                />
               ))}
             </tbody>
           </table>
         </article>
       </main>
+
+      {addOpen && (
+        <AddInvitation
+          menuTogle={addOpen}
+          by={"barbershop"}
+          onClose={() => setAddOpen(false)}
+        />
+      )}
     </div>
   );
 }

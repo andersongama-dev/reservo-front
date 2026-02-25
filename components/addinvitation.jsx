@@ -84,17 +84,33 @@ export default function AddInvitation({ onClose, by }) {
 
         <div className="w-[30dvw] flex flex-col gap-8 mt-16">
           <div className="flex flex-col gap-6">
-            <Input
-              inputType="text"
-              inputPlaceholder="Código do barbeiro"
-              value={invitation.code}
-              onChange={(e) =>
-                setInvitation({
-                  ...invitation,
-                  code: e.target.value,
-                })
-              }
-            />
+            {by === "barbershop" && (
+              <Input
+                inputType="text"
+                inputPlaceholder="Código do barbeiro"
+                value={invitation.code}
+                onChange={(e) =>
+                  setInvitation({
+                    ...invitation,
+                    code: e.target.value,
+                  })
+                }
+              />
+            )}
+
+            {by === "barber" && (
+              <Input
+                inputType="text"
+                inputPlaceholder="Código da barbearia"
+                value={invitation.code}
+                onChange={(e) =>
+                  setInvitation({
+                    ...invitation,
+                    code: e.target.value,
+                  })
+                }
+              />
+            )}
           </div>
 
           <Button variant="primary" onClick={addInvitation}>
