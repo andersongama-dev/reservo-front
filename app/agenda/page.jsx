@@ -1,36 +1,35 @@
+"use client";
+
+import { useEffect, useState } from "react";
+
 import Sidebar from "@/components/sidebar";
 import Input from "@/components/input";
 import Day from "@/components/day";
 import Timetables from "@/components/timetables";
 import Scheduling from "@/components/scheduling";
+import AddScheduling from "@/components/addScheduling";
 
 export default function Agenda() {
-  const weekDays = [
-    { day: "Segunda", date: "04-05" },
-    { day: "Terça", date: "05-05" },
-    { day: "Quarta", date: "06-05" },
-    { day: "Quinta", date: "07-05" },
-    { day: "Sexta", date: "08-05" },
-    { day: "Sábado", date: "09-05" },
-    { day: "Domingo", date: "10-05" },
-  ];
+  const [agendamentos, setAgendamentos] = useState([]);
+  const [showAddScheduling, setShowAddScheduling] = useState(false);
+  const [currentDate, setCurrentDate] = useState(new Date());
 
   const timeTables = [
     { time: "09:00" },
-    { time: "10-00" },
-    { time: "11-00" },
-    { time: "12-00" },
-    { time: "13-00" },
-    { time: "14-00" },
-    { time: "15-00" },
-    { time: "16-00" },
-    { time: "17-00" },
-    { time: "18-00" },
-    { time: "19-00" },
-    { time: "20-00" },
-    { time: "21-00" },
-    { time: "22-00" },
-    { time: "23-00" },
+    { time: "10:00" },
+    { time: "11:00" },
+    { time: "12:00" },
+    { time: "13:00" },
+    { time: "14:00" },
+    { time: "15:00" },
+    { time: "16:00" },
+    { time: "17:00" },
+    { time: "18:00" },
+    { time: "19:00" },
+    { time: "20:00" },
+    { time: "21:00" },
+    { time: "22:00" },
+    { time: "23:00" },
   ];
 
   const week = {
@@ -43,42 +42,84 @@ export default function Agenda() {
     Domingo: 6,
   };
 
-  const agendamentos = [
-    {
-      cliente: "Anderson",
-      service: "Corte simples",
-      dia: "Segunda",
-      horario: 9,
-    },
-    {
-      cliente: "Gabriel",
-      service: "Corte simples",
-      dia: "Segunda",
-      horario: 10,
-    },
-    {
-      cliente: "Vitor CEE",
-      service: "Corte e barba",
-      dia: "Segunda",
-      horario: 11,
-    },
+  useEffect(() => {
+    loadSchedulings();
+  }, []);
 
-    {
-      cliente: "Pedro",
-      service: "Corte e barba",
-      dia: "Terça",
-      horario: 15,
-    },
-  ];
+  async function loadSchedulings() {
+    try {
+      const response = await fetch("http://localhost:3333/scheduling/all", {
+        credentials: "include",
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Erro ao buscar agendamentos");
+      }
+
+      setAgendamentos(data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   const grid = Array.from({ length: 15 }, () => Array(7).fill(null));
 
-  agendamentos.forEach((agendamento) => {
-    const diaIndex = week[agendamento.dia];
-    const horarioIndex = agendamento.horario - 9;
+  const startOfWeek = new Date(currentDate);
 
-    if (diaIndex !== undefined && horarioIndex >= 0) {
-      grid[horarioIndex][diaIndex] = agendamento;
+  const day = startOfWeek.getDay();
+
+  const offset = day === 0 ? -6 : 1 - day;
+
+  startOfWeek.setDate(startOfWeek.getDate() + offset);
+
+  const weekDays = Array.from({ length: 7 }, (_, index) => {
+    const date = new Date(startOfWeek);
+
+    date.setDate(startOfWeek.getDate() + index);
+
+    return {
+      date,
+      day: date.toLocaleDateString("pt-BR", {
+        weekday: "long",
+      }),
+      label: date.toLocaleDateString("pt-BR", {
+        day: "2-digit",
+        month: "2-digit",
+      }),
+    };
+  });
+
+  const schedulingsOfMonth = agendamentos.filter((agendamento) => {
+    const date = new Date(agendamento.schedulingDate);
+
+    return (
+      date.getUTCMonth() === currentDate.getMonth() &&
+      date.getUTCFullYear() === currentDate.getFullYear()
+    );
+  });
+
+  schedulingsOfMonth.forEach((agendamento) => {
+    const date = new Date(agendamento.schedulingDate);
+
+    const dayNumber = date.getUTCDate();
+
+    const hour = date.getUTCHours();
+
+    const weekDayIndex = weekDays.findIndex(
+      (d) => d.date.getDate() === dayNumber,
+    );
+
+    const rowIndex = hour - 9;
+
+    if (weekDayIndex !== -1 && rowIndex >= 0 && rowIndex < 15) {
+      grid[rowIndex][weekDayIndex] = {
+        cliente:
+          agendamento.user?.name || agendamento.user?.username || "Cliente",
+
+        service: agendamento.service?.serviceName || "Serviço",
+      };
     }
   });
 
@@ -94,47 +135,85 @@ export default function Agenda() {
 
           <div className="flex items-center gap-4">
             <img
-              src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fclaritycareconsulting.co.uk%2Fwp-content%2Fuploads%2F2023%2F05%2FBlank-Profile-Picture.jpg&f=1&nofb=1&ipt=23f61c5a25d8d57df3e6444e87f95bc9d6986eefc64b789ca2464151cc729997"
+              src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fclaritycareconsulting.co.uk%2Fwp-content%2Fuploads%2F2023%2F05%2FBlank-Profile-Picture.jpg"
               alt=""
               className="w-14 h-14 rounded-full object-cover"
             />
+
             <select
               name="agenda"
               id="agenda"
               className="text-base text-[#757575]"
             >
               <option value="1">Nome do barbeiro</option>
-              <option value="2">Nome do barbeiro</option>
             </select>
           </div>
         </div>
-        <div className="mt-16 flex justify-between items-center">
-          <h5 className="text-3xl font-semibold text-[#757575] tracking-[2%] leading-relaxed">
-            May, 2026
-          </h5>
 
-          <div className="flex gap-6">
-            <button className="py-2 px-4 bg-[#0000d5] text-white text-base font-semibold flex gap-4 tracking-[2%] leading-relaxed rounded items-center cursor-pointer">
-              <i className="bi bi-plus"></i> Adicionar novo
+        <div className="mt-16 flex justify-between items-center">
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() =>
+                setCurrentDate(
+                  new Date(
+                    currentDate.getFullYear(),
+                    currentDate.getMonth() - 1,
+                    1,
+                  ),
+                )
+              }
+            >
+              ←
+            </button>
+
+            <h5 className="text-3xl font-semibold text-[#757575]">
+              {currentDate.toLocaleDateString("pt-BR", {
+                month: "long",
+                year: "numeric",
+              })}
+            </h5>
+
+            <button
+              onClick={() =>
+                setCurrentDate(
+                  new Date(
+                    currentDate.getFullYear(),
+                    currentDate.getMonth() + 1,
+                    1,
+                  ),
+                )
+              }
+            >
+              →
             </button>
           </div>
+
+          <button
+            onClick={() => setShowAddScheduling(true)}
+            className="py-2 px-4 bg-[#0000d5] text-white rounded flex gap-2 items-center cursor-pointer"
+          >
+            <i className="bi bi-plus"></i>
+            Adicionar novo
+          </button>
         </div>
+
         <div className="flex mt-12">
           <div className="p-6 text-5xl bg-[#ccccf7] text-[#0000d5]">
             <i className="bi bi-calendar-check"></i>
           </div>
-          <div className="grid grid-cols-7 w-full bg-[#ebebfc] text-center font-semibold text-[#757575] tracking-[2%] leading-relaxed">
+
+          <div className="grid grid-cols-7 w-full bg-[#ebebfc] text-center font-semibold text-[#757575]">
             {weekDays.map((day) => (
-              <Day key={day.date} day={day.day} date={day.date} />
+              <Day key={day.label} day={day.day} date={day.label} />
             ))}
           </div>
         </div>
 
         <div className="mt-8 flex gap-12">
           <div>
-            <div className="text-base font-semibold text-[#757575] tracking-[2%] leading-relaxed grid gap-4">
+            <div className="grid gap-4 text-base font-semibold text-[#757575]">
               {timeTables.map((time) => (
-                <Timetables key={time.time} time={time.time}></Timetables>
+                <Timetables key={time.time} time={time.time} />
               ))}
             </div>
           </div>
@@ -157,6 +236,15 @@ export default function Agenda() {
           </div>
         </div>
       </main>
+
+      {showAddScheduling && (
+        <AddScheduling
+          onClose={() => {
+            setShowAddScheduling(false);
+            loadSchedulings();
+          }}
+        />
+      )}
     </div>
   );
 }
